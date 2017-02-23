@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Errors</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Error Report</h2>
+      <% @errors.values.sort_by{ |o| o.name }.each do |organization| %>
+        <h3><%= organization.name %></h3>
+        <% if organization.quest_errors.length > 0 %>
+          <h4>Quests</h4>
+          <table class="table">
+            <thead>
+              <tr><th>Name</th><th>Property</th></tr>
+            </thead>
+            <tbody>
+              <% organization.quest_errors.sort_by{ |q| q.name }.each do |quest_url| %>
+                <tr>
+                  <td><%= quest_url.name %></td>
+                  <td><%= quest_url.property %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+        <% if organization.resource_errors.length > 0 %>
+          <h4>Resources</h4>
+          <table class="table">
+            <thead>
+              <tr><th>Quest</th><th>Activity</th><th>Resource</th><th>Property</th></tr>
+            </thead>
+            <tbody>
+              <% organization.resource_errors.sort_by{ |r| r.quest['name'] }.each do |resource_url| %>
+                <tr>
+                  <td><%= resource_url.quest['name'] %></td>
+                  <td><%= resource_url.activity['name'] %></td>
+                  <td><%= resource_url.name %></td>
+                  <td><%= resource_url.property %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      <% end %>
+    </div>
+  </body>
+</html>
