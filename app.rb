@@ -107,7 +107,7 @@ class App
     mail.from = Email.new(email: 'noreply@questlearning.org', name: 'Broken Links')
     mail.subject = 'Error Report'
     personalization = Personalization.new
-    personalization.to = Email.new(email: 'links@questlearning.org', name: 'Links')
+    personalization.to = Email.new(email: ENV['TO'], name: 'Links')
     mail.personalizations = personalization
 
     text_email = ERB.new(File.read(File.expand_path('../views/email.text.erb', __FILE__)))
