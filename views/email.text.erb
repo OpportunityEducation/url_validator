@@ -1,5 +1,14 @@
 Hello,
 
-This week's report can be found at the url below:
+This week there were <%= @quest_errors.length %> quest errors and <%= @resource_errors.length %> resource errors.
 
-<%= @report.public_url %>
+<% if @quest_errors.length > 0 %>
+  The quest report can be found here: <%= @quest_csv.public_url %>
+<% end %>
+<% if @resource_errors.length > 0 %>
+  The resource report can be found here: <%= @resource_csv.public_url %>
+<% end %>
+
+Go to QuestMaker to update these links at your earliest convenience.
+
+- The Quest Forward Team

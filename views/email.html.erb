@@ -7,7 +7,15 @@
       <tr>
         <td>
           <p>Hello,</p>
-          <p>This week's report can be found <a href=<%= @report.public_url %>>here</a>.</p>
+          <p>This week there were <%= @quest_errors.length %> quest errors and <%= @resource_errors.length %> resource errors.</p>
+          <% if @quest_errors.length > 0 %>
+            <p>The quest report can be found <a href=<%= @quest_csv.public_url %>>here</a>.</p>
+          <% end %>
+          <% if @resource_errors.length > 0 %>
+            <p>The resource report can be found <a href=<%= @resource_csv.public_url %>>here</a>.</p>
+          <% end %>
+          <p>Go to QuestMaker to update these links at your earliest convenience.</p>
+          <p>-The Quest Forward Team</p>
         </td>
       </tr>
     </table>
