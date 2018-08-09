@@ -83,7 +83,7 @@ DEPENDENCIES
   sendgrid-ruby
 
 RUBY VERSION
-   ruby 2.3.1p0 (jruby 9.1.5.0)
+   ruby 2.3.3p0 (jruby 9.1.17.0)
 
 BUNDLED WITH
-   1.14.3
+   1.16.3
