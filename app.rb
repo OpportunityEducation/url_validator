@@ -8,42 +8,48 @@ require 'erb'
 require 'fog/aws'
 require 'sendgrid-ruby'
 require 'csv'
-require File.expand_path('../models/quest_url', __FILE__)
-require File.expand_path('../models/resource_url', __FILE__)
-require File.expand_path('../models/organization', __FILE__)
+require File.expand_path('models/quest_url', __dir__)
+require File.expand_path('models/resource_url', __dir__)
+require File.expand_path('models/organization', __dir__)
 
+# rubocop:disable Metrics/ClassLength
 class App
   include SendGrid
 
   QUEST_URL    = ENV['QUEST_URL']
   RESOURCE_URL = ENV['RESOURCE_URL']
-  WHITELIST    = ENV.fetch('WHITELIST', '').split(',').map{ |d| Regexp.escape(d) }.join('|')
+  WHITELIST    = ENV.fetch('WHITELIST', '').split(',').map { |d| Regexp.escape(d) }.join('|')
   THREAD_COUNT = (ENV['MAX_THREADS'] || 20).to_i
 
   attr_accessor :quest_errors, :resource_errors, :quest_queue, :resource_queue
   attr_reader :mutex
 
   def self.start
-    new().start
+    new.start
   end
 
+  # rubocop:disable Metrics/AbcSize
   def initialize
     @quest_errors = []
     @resource_errors = []
     @quest_queue, @resource_queue = Queue.new, Queue.new
     @mutex = Mutex.new
 
-    JSON.parse(open(QUEST_URL).read).
-      reject{ |l| WHITELIST.length > 0 ? l['url'] =~ /(#{WHITELIST})/i : false }.
-      each{ |quest_url| @quest_queue.push(QuestUrl.new(quest_url)) }
+    # rubocop:disable Security/Open
+    JSON.parse(open(QUEST_URL).read)
+        .reject { |l| !WHITELIST.empty? ? l['url'] =~ /(#{WHITELIST})/i : false }
+        .each { |quest_url| @quest_queue.push(QuestUrl.new(quest_url)) }
 
-    JSON.parse(open(RESOURCE_URL).read).
-      reject{ |l| WHITELIST.length > 0 ? l['url'] =~ /(#{WHITELIST})/i : false }.
-      each{ |resource_url| @resource_queue.push(ResourceUrl.new(resource_url)) }
-
-    self
+    JSON.parse(open(RESOURCE_URL).read)
+        .reject { |l| !WHITELIST.empty? ? l['url'] =~ /(#{WHITELIST})/i : false }
+        .each { |resource_url| @resource_queue.push(ResourceUrl.new(resource_url)) }
+    # rubocop:enable Security/Open
   end
+  # rubocop:enable Metrics/AbcSize
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
   def start
     Thread.abort_on_exception = true
     STDERR.puts "Checking #{@quest_queue.length} quests with #{THREAD_COUNT} threads..."
@@ -53,7 +59,7 @@ class App
         until @quest_queue.empty?
           quest_url = @quest_queue.shift
 
-          if !quest_url.valid?
+          unless quest_url.valid?
             @mutex.synchronize { quest_errors << quest_url }
             STDERR.puts "#{quest_url.status} - #{quest_url.url}"
           end
@@ -70,7 +76,7 @@ class App
         until @resource_queue.empty?
           resource_url = @resource_queue.shift
 
-          if !resource_url.valid?
+          unless resource_url.valid?
             @mutex.synchronize { resource_errors << resource_url }
             STDERR.puts "#{resource_url.status} - #{resource_url.url} - #{resource_url.property}"
           end
@@ -122,19 +128,19 @@ class App
     Excon.defaults[:ciphers] = 'DEFAULT'
 
     # create a connection
-    connection = Fog::Storage.new({
+    connection = Fog::Storage.new(
       provider:               'AWS',
       aws_access_key_id:      ENV['AWS_ACCESS_KEY_ID'],
       aws_secret_access_key:  ENV['AWS_SECRET_ACCESS_KEY']
-    })
+    )
 
     # First, a place to contain the glorious details
     directory = connection.directories.create(
-      key:    "org-opportunityeducation-quest-development-report",
+      key:    'org-opportunityeducation-quest-development-report',
       public: true
     )
 
-    if @quest_errors.length > 0
+    unless @quest_errors.empty?
       # Upload the quest csv
       @quest_csv = directory.files.create(
         key:    'broken_quests.csv',
@@ -145,10 +151,10 @@ class App
       puts "Quest Report: #{@quest_csv.public_url}"
     end
 
-    if @resource_errors.length > 0
+    unless @resource_errors.empty?
       # Upload the resource csv
       @resource_csv = directory.files.create(
-        key:    "broken_resources.csv",
+        key:    'broken_resources.csv',
         body:   resource_string,
         public: true
       )
@@ -163,15 +169,19 @@ class App
     personalization.to = Email.new(email: ENV['TO'], name: 'Links')
     mail.personalizations = personalization
 
-    text_email = ERB.new(File.read(File.expand_path('../views/email.text.erb', __FILE__)))
+    text_email = ERB.new(File.read(File.expand_path('views/email.text.erb', __dir__)))
     mail.contents = Content.new(type: 'text/plain', value: text_email.result(binding))
 
-    html_email = ERB.new(File.read(File.expand_path('../views/email.html.erb', __FILE__)))
+    html_email = ERB.new(File.read(File.expand_path('views/email.html.erb', __dir__)))
     mail.contents = Content.new(type: 'text/html', value: html_email.result(binding))
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])
-    response = sg.client.mail._('send').post(request_body: mail.to_json)
+    sg.client.mail._('send').post(request_body: mail.to_json)
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength
 end
+# rubocop:enable Metrics/ClassLength
 
-App.start()
+App.start

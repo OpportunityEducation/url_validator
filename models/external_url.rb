@@ -1,4 +1,4 @@
-require File.expand_path('../../services/status_service', __FILE__)
+require File.expand_path('../services/status_service', __dir__)
 require 'uri'
 
 class ExternalUrl
@@ -8,8 +8,6 @@ class ExternalUrl
     attributes.each do |k, v|
       public_send("#{k}=", v)
     end
-
-    self
   end
 
   def friendly_url

@@ -1,0 +1,22 @@
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: false
+  Exclude:
+    - vendor/**/*
+
+# STYLE COPS
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false

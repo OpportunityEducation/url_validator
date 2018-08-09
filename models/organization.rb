@@ -8,18 +8,14 @@ class Organization
 
   # Hacky, but :shrug:
   def id
-    if error = @quest_errors.first || @resource_errors.first
-      error.organization['id']
-    end
+    return unless (error = @quest_errors.first || @resource_errors.first)
+
+    error.organization['id']
   end
 
   def name
-    if error = @quest_errors.first || @resource_errors.first
-      error.organization['name']
-    end
-  end
+    return unless (error = @quest_errors.first || @resource_errors.first)
 
-  def has_errors?
-    @quest_errors.blank? && @resource_errors.blank?
+    error.organization['name']
   end
 end

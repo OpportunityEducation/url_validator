@@ -1,12 +1,10 @@
 class StatusService
-  USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36'
+  USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36'.freeze
 
   attr_reader :url
 
   def initialize(url)
     @url = url
-
-    self
   end
 
   def self.call(url)

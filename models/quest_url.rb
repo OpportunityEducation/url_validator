@@ -1,4 +1,4 @@
-require File.expand_path('../external_url', __FILE__)
+require File.expand_path('external_url', __dir__)
 require 'uri'
 
 class QuestUrl < ExternalUrl

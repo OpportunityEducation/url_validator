@@ -7,7 +7,5 @@ class Resource
 
       public_send("#{k}=", v.is_a?(String) ? v.strip : v)
     end
-
-    self
   end
 end

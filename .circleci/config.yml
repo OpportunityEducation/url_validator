@@ -1,0 +1,55 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    working_directory: ~/url_validator
+    environment:
+      CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    docker:
+      - image: circleci/ruby:2.5.1
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+    steps:
+    - checkout
+
+    # Prepare for artifact and test results
+    - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+
+    # Update rubygems
+    - run: gem update --system
+
+    # Restore the dependency cache
+    - restore_cache:
+        keys:
+          - url_validator-v1-{{ checksum "Gemfile.lock" }}
+          - url_validator-v1-
+
+    # Install gems
+    - run: bundle check || bundle install --path vendor/bundle
+
+    # Save dependency cache
+    - save_cache:
+        key: url_validator-v1-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+    # Test
+    - run: mkdir -p $CIRCLE_TEST_REPORTS/rspec
+    - run:
+        command: bundle exec rspec --color --format documentation --require spec_helper --format RspecJunitFormatter --out $CIRCLE_TEST_REPORTS/rspec/rspec.xml --format progress spec
+
+    # Linting
+    - run: bundle exec rubocop
+
+    # Save test results
+    - store_test_results:
+        path: /tmp/circleci-test-results
+
+    # Save artifacts
+    - store_artifacts:
+        path: /tmp/circleci-artifacts
+    - store_artifacts:
+        path: /tmp/circleci-test-results
