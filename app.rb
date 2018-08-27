@@ -38,10 +38,12 @@ class App
     # rubocop:disable Security/Open
     JSON.parse(open(QUEST_URL).read)
         .reject { |l| !WHITELIST.empty? ? l['url'] =~ /(#{WHITELIST})/i : false }
+        .reject { |l| l['url'].nil? || l['url'].empty? }
         .each { |quest_url| @quest_queue.push(QuestUrl.new(quest_url)) }
 
     JSON.parse(open(RESOURCE_URL).read)
         .reject { |l| !WHITELIST.empty? ? l['url'] =~ /(#{WHITELIST})/i : false }
+        .reject { |l| l['url'].nil? || l['url'].empty? }
         .each { |resource_url| @resource_queue.push(ResourceUrl.new(resource_url)) }
     # rubocop:enable Security/Open
   end
@@ -59,10 +61,7 @@ class App
         until @quest_queue.empty?
           quest_url = @quest_queue.shift
 
-          unless quest_url.valid?
-            @mutex.synchronize { quest_errors << quest_url }
-            STDERR.puts "#{quest_url.status} - #{quest_url.url}"
-          end
+          @mutex.synchronize { quest_errors << quest_url } unless quest_url.valid?
         end
       end
     end
@@ -76,10 +75,7 @@ class App
         until @resource_queue.empty?
           resource_url = @resource_queue.shift
 
-          unless resource_url.valid?
-            @mutex.synchronize { resource_errors << resource_url }
-            STDERR.puts "#{resource_url.status} - #{resource_url.url} - #{resource_url.property}"
-          end
+          @mutex.synchronize { resource_errors << resource_url } unless resource_url.valid?
         end
       end
     end
