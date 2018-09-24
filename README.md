@@ -26,6 +26,10 @@ Open Terminal and run the following command:
 
 `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
+## Installing JRuby
+
+For all platforms, make sure you have [Java SE](http://www.oracle.com/technetwork/java/javase/downloads/index.html) installed. You can test this by running the command `java -version`.
+
 ## rbenv & ruby-build
 
 Now that we have Homebrew installed, we can use it to install Ruby.
