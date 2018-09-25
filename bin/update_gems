@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+git checkout master
+git pull
+git checkout -b gem-update-$(date +"%Y%m%d")
+bundle update
+git add Gemfile.lock
+git commit -m "Update gems - $(date +"%Y-%m-%d")"
+bundle exec rspec
+bundle outdated

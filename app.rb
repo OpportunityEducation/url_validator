@@ -29,6 +29,7 @@ class App
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def initialize
     @quest_errors = []
     @resource_errors = []
@@ -47,6 +48,7 @@ class App
         .each { |resource_url| @resource_queue.push(ResourceUrl.new(resource_url)) }
     # rubocop:enable Security/Open
   end
+  # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
 
   # rubocop:disable Metrics/AbcSize
