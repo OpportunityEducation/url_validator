@@ -3,12 +3,19 @@ Hello,
 This week there were <%= @quest_errors.length %> quest errors and <%= @resource_errors.length %> resource errors.
 
 <% if @quest_errors.length > 0 %>
-  The quest report can be found here: <%= @quest_csv.public_url %>
+The quest report can be found here: <%= @quest_csv.public_url %>
 <% end %>
 <% if @resource_errors.length > 0 %>
-  The resource report can be found here: <%= @resource_csv.public_url %>
+The resource report can be found here: <%= @resource_csv.public_url %>
 <% end %>
+<% if @quest_errors.length > 0 || @resource_errors.length > 0 %>
+Once you open the file, follow these steps to access it:
+1. Go to the File menu and select the option "Save Page As".
+2. Choose the file format as "comma-separated values".
+3. Save to your local machine.
+4. You can now open the file using excel (if you have it installed) or upload to Google Drive and "Open with" Google Sheets.
 
 Go to QuestMaker to update these links at your earliest convenience.
+<% end %>
 
 - The Quest Forward Team

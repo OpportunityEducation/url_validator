@@ -14,7 +14,16 @@
           <% if @resource_errors.length > 0 %>
             <p>The resource report can be found <a href=<%= @resource_csv.public_url %>>here</a>.</p>
           <% end %>
-          <p>Go to QuestMaker to update these links at your earliest convenience.</p>
+          <% if @quest_errors.length > 0 || @resource_errors.length > 0 %>
+            <p>Once you open the file, follow these steps to access it:</p>
+            <ol>
+              <li>Go to the File menu and select the option "Save Page As".</li>
+              <li>Choose the file format as "comma-separated values".</li>
+              <li>Save to your local machine.</li>
+              <li>You can now open the file using excel (if you have it installed) or upload to Google Drive and "Open with" Google Sheets.</li>
+            </ol>
+            <p>Go to QuestMaker to update these links at your earliest convenience.</p>
+          <% end %>
           <p>-The Quest Forward Team</p>
         </td>
       </tr>
