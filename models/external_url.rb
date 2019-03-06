@@ -2,7 +2,7 @@ require File.expand_path('../services/status_service', __dir__)
 require 'uri'
 
 class ExternalUrl
-  attr_accessor :id, :name, :property, :url, :organization
+  attr_accessor :id, :name, :property, :url, :organization, :managers
 
   def initialize(attributes = {})
     attributes.each do |k, v|
