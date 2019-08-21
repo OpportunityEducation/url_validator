@@ -162,14 +162,14 @@ class App
     mail.from = Email.new(email: 'no-reply@questforward.org', name: 'Quest Forward Team')
     mail.subject = 'Broken Links Report'
     personalization = Personalization.new
-    personalization.to = Email.new(email: ENV['TO'], name: 'Links')
-    mail.personalizations = personalization
+    personalization.add_to(Email.new(email: ENV['TO'], name: 'Links'))
+    mail.add_personalization(personalization)
 
     text_email = ERB.new(File.read(File.expand_path('views/email.text.erb', __dir__)))
-    mail.contents = Content.new(type: 'text/plain', value: text_email.result(binding))
+    mail.add_content(Content.new(type: 'text/plain', value: text_email.result(binding)))
 
     html_email = ERB.new(File.read(File.expand_path('views/email.html.erb', __dir__)))
-    mail.contents = Content.new(type: 'text/html', value: html_email.result(binding))
+    mail.add_content(Content.new(type: 'text/html', value: html_email.result(binding)))
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])
     sg.client.mail._('send').post(request_body: mail.to_json)
