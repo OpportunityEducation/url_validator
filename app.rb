@@ -28,7 +28,10 @@ class App
     new.start
   end
 
+  # rubocop:disable Style/StderrPuts
+  # rubocop:disable Layout/HashAlignment
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def initialize
     @quest_errors = []
     @resource_errors = []
@@ -51,7 +54,6 @@ class App
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/MethodLength
   def start
     Thread.abort_on_exception = true
     STDERR.puts "Checking #{@quest_queue.length} quests with #{THREAD_COUNT} threads..."
@@ -177,6 +179,8 @@ class App
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Layout/HashAlignment
+  # rubocop:enable Style/StderrPuts
 end
 # rubocop:enable Metrics/ClassLength
 

@@ -18,9 +18,18 @@ Style/ClassAndModuleChildren:
 Style/ParallelAssignment:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Style/BlockComments:
   Exclude:
     - spec/spec_helper.rb
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
